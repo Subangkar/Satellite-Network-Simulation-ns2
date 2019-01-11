@@ -152,14 +152,14 @@ set udp0 [new Agent/UDP]
 $ns_ attach-agent $n100 $udp0
 set cbr0 [new Application/Traffic/CBR]
 $cbr0 attach-agent $udp0
-$cbr0 set interval_ 6.01
+$cbr0 set interval_ 0.601
 
 set udp1 [new Agent/UDP]
 $ns_ attach-agent $n200 $udp1
 $udp1 set class_ 1
 set cbr1 [new Application/Traffic/CBR]
 $cbr1 attach-agent $udp1
-$cbr1 set interval_ 9.5
+$cbr1 set interval_ 0.95
 
 set null0 [new Agent/Null]
 $ns_ attach-agent $n101 $null0

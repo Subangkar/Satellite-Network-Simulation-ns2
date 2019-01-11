@@ -14,10 +14,10 @@ BEGIN {
 	nReceivedBytes = 0;
 
 	for(i = 0; i < max_pckt; i++){
-		send_flag[i] = 0;
+		sent[i] = 0;
 	}
 
-	# printf("Starting Analysis\n");
+	PKT_SIZE_CBR=210;
 }
 
 {
@@ -33,7 +33,6 @@ BEGIN {
 	flow_id = $8;
 	src_addr = $9;
 	dest_addr = $10;
-	#seq_no = $11;
 	pkt_id = $11;
 
 	sub(/^_*/, "", node);
@@ -50,7 +49,7 @@ BEGIN {
 		if(rTime<rStartTime) rStartTime=rTime;
 		if(rTime>rEndTime) rEndTime=rTime;	
 
-		if ( strEvent == "+" && pkt_size == "210") {
+		if ( strEvent == "+" && pkt_size == PKT_SIZE_CBR) {
 			
 			source = int(from_node)
 			potential_source = int(src_addr)
@@ -58,7 +57,7 @@ BEGIN {
 			if(source == potential_source) {
 				nSentPackets += 1 ;	
 				rSentTime[ pkt_id ] = rTime ;
-				send_flag[pkt_id] = 1;
+				sent[pkt_id] = 1;
 			}
 			
 		}
@@ -66,7 +65,7 @@ BEGIN {
 		potential_dest = int(to_node)
 		dest = int(dest_addr) 
 
-		if ( strEvent == "r" && potential_dest == dest && pkt_size == "210") {
+		if ( strEvent == "r" && potential_dest == dest && pkt_size == PKT_SIZE_CBR && sent[pkt_id] == 1) {
 			nReceivedPackets += 1 ;		
 			nReceivedBytes += pkt_size;
 
@@ -74,7 +73,7 @@ BEGIN {
 			rDelay[pkt_id] = rReceivedTime[ pkt_id] - rSentTime[ pkt_id ];
 			rTotalDelay += rDelay[pkt_id]; 
 		}
-		if(strEvent == "d" && pkt_size == "210"){
+		if(strEvent == "d" && pkt_size == PKT_SIZE_CBR){
 			# printf("Packet Dropped\n");
 			
 			nDropPackets += 1;
@@ -87,8 +86,8 @@ END {
 
 	rTime = rEndTime - rStartTime ;
 	rThroughput = nReceivedBytes*8 / rTime;
-	rPacketDeliveryRatio = nReceivedPackets / nSentPackets * 100 ;
-	rPacketDropRatio = nDropPackets / nSentPackets * 100;
+	rPacketDeliveryRatio = (nReceivedPackets / nSentPackets) * 100 ;
+	rPacketDropRatio = (nDropPackets / nSentPackets) * 100;
 
 	if ( nReceivedPackets != 0 ) {
 		rAverageDelay = rTotalDelay / nReceivedPackets ;
