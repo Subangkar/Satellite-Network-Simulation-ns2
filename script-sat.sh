@@ -20,19 +20,13 @@ graphData="$outputDirectory""GRAPH.graph"
 
 
 nNodesInit=10
-# pcktRateInit = 100
-
 nNodes=$nNodesInit
-# pcktRate = $pcktRateInit
 
 iteration=$(printf %.0f $iteration_float);
 
 
-echo 'Number of nodes will be varied.'
+echo 'Varying #Nodes.'
 
-
-echo 'Please enter the # of iteration'
-# read nDataSets
 nDataSets=5
 round=1
 
@@ -134,26 +128,12 @@ do
 
 
 	round=$(($round+1))
-#
-	########Plotting Graph
+
+	######## Graph Generation
 
 	echo -ne "$nNodes " >> $graphData
 	
 	nNodes=$(($nNodesInit*$round))
-	# pcktRate=$(($pcktRateInit*$round))
-
-	# if [ "$param" == "1" ]; then
-	# 	echo -ne "$nNodes " >> $graphData
-	# 	nNodes=$(($nNodesInit*$round))
-	# elif [ "$param" == "2" ]; then
-	# 	echo -ne "$nFlows " >> $graphData
-	# 	nFlows=$(($nFlowsInit*$round))
-	# elif [ "$param" == "3" ]; then
-	# 	echo -ne "$pcktRate " >> $graphData
-	# 	pcktRate=$(($pcktRateInit*$round))
-	# fi
-
-	# echo "throughput: $thr delay: $del deliver_rat: $del_ratio drop_rat: $dr_ratio" >> $graphData
 
 	echo "$thr $del $del_ratio $dr_ratio" >> $graphData	
 	#####################END A ROUND
@@ -161,13 +141,6 @@ done
 
 param="No of nodes"
 
-# if [ "$param" == "1" ]; then
-# 	param="No of nodes"
-# elif [ "$param" == "2" ]; then
-# 	param="No of flows"
-# elif [ "$param" == "3" ]; then
-# 	param="Packet Rate"
-# fi
 
 arr[0]=""
 arr[1]=""
